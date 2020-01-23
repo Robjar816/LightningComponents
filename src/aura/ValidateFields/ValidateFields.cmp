@@ -1,0 +1,12 @@
+<aura:component implements="force:lightningQuickAction,force:hasRecordId" controller="ValidateFieldsController">
+    <!-- Handler -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInIt}"/>
+    
+    <!-- Attribute -->
+    <aura:attribute name="recordId" type="String"/>
+    
+    <!-- Spinner -->
+	<div class="slds-is-relative" style="min-height: 30vh;">
+        <lightning:spinner alternativeText="Loading" size="large" aura:id="mySpinner" />
+    </div>
+</aura:component>
