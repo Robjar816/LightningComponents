@@ -1,0 +1,36 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId" access="global" controller="DynamicDropDown_Controller">
+    <!-- Handler -->
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+    
+    <!-- Attributes -->
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="options" type="List"/>
+    <aura:attribute name="dependentOptions" type="List"/>
+    <aura:attribute name="selectedValue" type="String" />
+    <aura:attribute name="dependentSelectedValue" type="String"/>
+    <aura:attribute name="showDependentOptions" type="Boolean" default="false"/>
+    <aura:attribute name="dependentMap" type="Map"/>
+    
+    <lightning:card title="Update Case Status">
+        <div class="slds-p-around_small">
+            <lightning:select name="select" label="Select a Reason" value="{!v.selectedValue}" onchange="{!c.handleChange}">
+        		<aura:iteration items="{!v.options}" var="option">
+                	<option text="{!option.label}" value="{!option.value}"> </option>
+            	</aura:iteration>
+    		</lightning:select>
+        </div>
+        <aura:if isTrue="{!v.showDependentOptions}">
+            <div class="slds-p-horizontal_small">
+                <lightning:select name="selectDependent" label="Select a Dependent Reason" value="{!v.dependentSelectedValue}">
+                    <aura:iteration items="{!v.dependentOptions}" var="depOption">
+                        <option text="{!depOption.label}" value="{!depOption.value}"> </option>
+                    </aura:iteration>
+                </lightning:select>
+            </div>
+        </aura:if>
+        <div class="slds-p-around_small">
+            <lightning:button variant="brand" label="Update Status" title="Update status" onclick="{!c.handleClick }"/>
+        </div>
+    </lightning:card>
+    
+</aura:component>
