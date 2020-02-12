@@ -1,0 +1,44 @@
+<aura:component controller ="DropDownController_AC"  implements="flexipage:availableForAllPageTypes,lightning:actionOverride,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:appHostable" access="global" >
+     <aura:attribute name="fields" type="String[]" />
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <!-- Attributes -->
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="options" type="List"/>
+    <aura:attribute name="dependentOptions" type="List"/>
+    <aura:attribute name="selectedValue" type="String" />
+    <aura:attribute name="dependentSelectedValue" type="String"/>
+    <aura:attribute name="showDependentOptions" type="Boolean" default="false"/>
+    <aura:attribute name="dependentMap" type="Map"/>
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    
+    
+    <lightning:card>
+        <div class="slds-p-around_small">
+            <lightning:select name="select" label="Select a Reason" value="{!v.selectedValue}" onchange="{!c.handleChange}">
+                <aura:iteration items="{!v.options}" var="option">
+                    <option text="{!option.label}" value="{!option.value}"> </option>
+                </aura:iteration>
+            </lightning:select>
+        </div>
+        <aura:if isTrue="{!v.showDependentOptions}">
+            <div class="slds-p-horizontal_small">
+                <lightning:select name="selectDependent" label="Select a Dependent Reason" value="{!v.dependentSelectedValue}">
+                    <aura:iteration items="{!v.dependentOptions}" var="depOption">
+                        <option text="{!depOption.label}" value="{!depOption.value}"> </option>
+                    </aura:iteration>
+                </lightning:select>
+            </div>
+        </aura:if>
+        
+        <lightning:recordForm
+                              aura:id="myRecordForm"
+                              recordId="{!v.recordId}"
+                              objectApiName="Case"
+                              fields="{!v.fields}"
+                              columns="2"
+                              mode="edit"
+                              onsuccess="{!c.handleSubmit}"  >
+            
+        </lightning:recordForm>
+    </lightning:card>
+</aura:component>
