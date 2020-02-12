@@ -1,0 +1,31 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId" access="global" controller="AutoPopulateRichText_Controller">
+    
+    <!-- Handler -->
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+    
+    <!-- Attributes -->
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="templates" type="List"/>
+    <aura:attribute name="templateMap" type="Map"/>
+    <aura:attribute name="templateSelected" type="String"/>
+    <aura:attribute name="inputText" type="String"/>
+    
+    <lightning:card title="Template">
+        <div class="slds-p-around_small">
+            <lightning:select name="select" label="Select a Template" value="{!v.templateSelected}" onchange="{!c.handleChange}">
+        		<aura:iteration items="{!v.templates}" var="temp">
+                	<option text="{!temp}" value="{!temp}"> </option>
+            	</aura:iteration>
+    		</lightning:select>
+        </div>
+        
+        <div>
+            <lightning:inputRichText value="{!v.inputText}" placeholder="Type something interesting"/>
+        </div>
+        
+        <div class="slds-p-around_small">
+            <lightning:button variant="brand" label="Save Note" title="Save note" onclick="{!c.handleSave}"/>
+        </div>
+        
+    </lightning:card>
+</aura:component>

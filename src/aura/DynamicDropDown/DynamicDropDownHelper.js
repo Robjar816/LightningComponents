@@ -61,7 +61,12 @@
     },
     
     updateCaseStatus : function (component, event) {
+        
         var _this= this;
+        
+        //Display spinner
+        _this.displaySpinner(component, true);
+        
         var actionName = "c.updateCaseStatus";
         var params = {
             "recordId": component.get("v.recordId"),
@@ -72,8 +77,10 @@
         
         _this.callAction(component, actionName, params, function(response){
             if(!$A.util.isEmpty(response.userMessage)) {
+                _this.displaySpinner(component, false);
                 _this.userNotification("error", "Required fields missing", response.userMessage);
             } else {
+                _this.displaySpinner(component, false);
                 _this.userNotification("Success!", "success", "Case reason has been updated");
             }
         });
@@ -112,5 +119,10 @@
         });
         toastEvent.fire();
         $A.get('e.force:refreshView').fire();
+    },
+    
+    //Set value on spinner
+    displaySpinner : function(component, spinnerAction) {
+        component.set("v.showSpinner", spinnerAction);
     },
 })

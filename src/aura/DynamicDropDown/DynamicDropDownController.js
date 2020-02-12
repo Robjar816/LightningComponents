@@ -3,8 +3,8 @@
 		helper.getOptions(component,event);
 	},
     
-    handleClick : function(component, event, helper) {
-        console.log("In Controller : handleClick");
+    handleUpdate : function(component, event, helper) {
+        console.log("In Controller : handleUpdate");
         helper.updateCaseStatus(component,event);
     },
     
