@@ -1,0 +1,31 @@
+/* Section Background Color */
+.THIS {
+    background-color: #FFF;
+}
+.THIS .test {
+    
+    width: 10 px;
+    height: 10 px;
+
+}    
+.THIS .white{
+    background-color: red;
+    width: 180px;
+    height: 100px;
+}
+.THIS .card{
+    padding-right: 4.5%;
+    padding-bottom: 3%;
+}
+
+.THIS .buttonPadding{
+    padding-left: 4.5%;
+}
+.THIS .font{
+    font-size: 1rem !important;
+    background-color: ;
+    border-style: groove;
+  	border-color: rgb(243, 242, 242);
+    border-width: .5px;
+    padding-left: 4.5%;
+}

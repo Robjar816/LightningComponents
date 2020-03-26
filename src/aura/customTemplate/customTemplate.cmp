@@ -1,0 +1,194 @@
+<aura:component Controller = "CustomTemplateController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+    <!-- Handler -->
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <aura:handler name="templateSelectedEvent" event="c:SearchROAETemplateEvent" action="{!c.handleEvent}"/>
+    
+    <!-- Attributes -->
+    <aura:attribute name="options" type="List" access="PRIVATE"/>
+    <aura:attribute name="selectedTemplate" type="String" access="PRIVATE"/>
+    <aura:attribute name="textValue" type="String" access="PRIVATE"/>
+    <aura:attribute name="subject" type="String" access="PRIVATE"/>
+    <aura:attribute name="description" type="String" access="PRIVATE"/>
+    <aura:attribute name="duedate" type="Date" access="PRIVATE"/>
+    <aura:attribute name="priority" type="String" access="PRIVATE"/>
+    <aura:attribute name="showRecordForm" type="Boolean" default="false" access="PRIVATE"/>
+    <aura:attribute name="fields" type="String[]" default="['ROAE_User__c']" />
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="assignmentGroupOptions" type="String[]"/>
+    <aura:attribute name="assignmentGroupValueSelected" type="String"/>
+    <aura:attribute name="taskTypeOptions" type="String[]"/>
+    <aura:attribute name="taskTypeValueSelected" type="String"/>
+    <aura:attribute name="queueOptions" type="String[]"/>
+    <aura:attribute name="queueSelected" type="String"/>
+    <aura:attribute name="dependentPicklistMap" type="Map"/>
+    <aura:attribute name="rush" type="Boolean" default="false"/>
+    <aura:attribute name="notes" type="String"/>
+    <aura:attribute name="assignTo" type="String"/>
+    <aura:attribute name="showUser" type="Boolean" default="false"/>
+    <aura:attribute name="showQueue" type="Boolean" default="false"/>
+    <aura:attribute name="showButton" type="Boolean" default="true"/>
+    <aura:attribute name="showSpinnerForTask" type="Boolean" default="false"/>
+    <aura:attribute name="showSpinnerForNote" type="Boolean" default="false"/>
+    <aura:attribute name="callChildComp" type="Boolean" default="false"/>
+    
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    <aura:attribute name="tbody" type="String" access="public"/>
+    
+    
+    <div class = "card">
+        
+        <lightning:card class = "card" title="Create Task or Note" iconName="standard:document">
+            
+            <div align ="left" class="slds-p-bottom_x-small buttonPadding">
+                <lightning:button variant="neutral" label="ROAE Templates" title="Click to select ROAE Templates" onclick="{!c.handleSelectTemplate}" />
+            </div>
+            <aura:if isTrue="{!not(empty(v.selectedTemplate))}">
+                <div class="buttonPadding">
+                    <h1 class="font slds-theme_shade">{!v.selectedTemplate}</h1>
+                </div>
+            </aura:if>
+            <aura:if isTrue="{!v.callChildComp}">
+                <c:SearchROAETemplates showModal="true"/>
+            </aura:if>
+            
+            <div  class="buttonPadding">
+                <lightning:inputRichText value="{!v.textValue}"/>
+            </div>
+            <br/>
+            
+            <div align ="center">
+                <lightning:button variant="brand" label="Create Notes" title="Create Notes" onclick="{! c.handleNote }" /> 
+                <lightning:button variant="brand" label="Create Task" title="Create Task" onclick="{! c.handleTask }" />
+            </div>
+            
+            <!-- Spinner will be displayed when note is being saved -->
+            <aura:if isTrue="{!v.showSpinnerForNote}">
+                <div>
+                    <lightning:spinner alternativeText="Loading" size="medium" />
+                </div>                
+            </aura:if>
+            
+        </lightning:card>
+        
+        <!-- Show modal (form) when user clicks on Create Task -->
+        <aura:if isTrue="{!v.showRecordForm}">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closeModel }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate"> New Task</h2>
+                        
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <div class="slds-form">
+                            <div class="slds-form-element slds-form-element_stacked">
+                                <div class="slds-form-element__control">
+                                    <lightning:input type="text" value="{!v.subject}" label="Subject" required="true"/> 
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-form-element_stacked">
+                                <label class="slds-form-element__label" for="stacked-input-id-01">Description</label>
+                                
+                                <div class="slds-form-element__control">
+                                    <lightning:inputRichText value="{!v.description}" label="Description"/>
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-form-element_stacked">
+                                <div class="slds-form-element__control">
+                                    <lightning:input type="checkbox" checked="{!v.rush}" label="Rush"/> 
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-form-element_stacked">
+                                <div class="slds-form-element__control">
+                                    <lightning:input type="date" value="{!v.duedate}" label="Due Date"/> 
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-form-element_stacked">
+                                <div class="slds-form-element__control">
+                                    <lightning:select name="assignmentGroup" label="Assignment Group" value="{!v.assignmentGroupValueSelected}" onchange="{!c.handleChange}" required="true">
+                                        <aura:iteration items="{!v.assignmentGroupOptions}" var="assignmentGroup">\
+                                            <option text="{!assignmentGroup.label}" value="{!assignmentGroup.value}"> </option>
+                                        </aura:iteration>
+                                    </lightning:select>
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-form-element_stacked">
+                                <div class="slds-form-element__control">
+                                    <lightning:select aura:id="taskType" name="taskType" label="Task Type" value="{!v.taskTypeValueSelected}" 
+                                                      required="true" disabled="true" title="Dependent on Assignment Group">
+                                        <aura:iteration items="{!v.taskTypeOptions}" var="taskType">\
+                                            <option text="{!taskType.label}" value="{!taskType.value}"> </option>
+                                        </aura:iteration>
+                                    </lightning:select>
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-form-element_stacked">
+                                <div class="slds-form-element__control">
+                                    <lightning:input value="{!v.notes}" label="Notes"/> 
+                                </div>
+                            </div>                            
+                            <div class="slds-form-element slds-form-element_stacked">
+                                <div class="slds-form-element__control">
+                                    <lightning:select name="assignTo" label="Assign To" value="{!v.assignTo}" onchange="{!c.handleAssignTo}" required="true">
+                                        <option value=""></option>
+                                        <option value="User">User</option>
+                                        <option value="Queue">Queue</option>
+                                    </lightning:select>
+                                </div>
+                            </div>
+                            
+                            <aura:if isTrue="{!v.showUser}">
+                                <lightning:recordForm
+                                                      objectApiName="Case"
+                                                      fields="{!v.fields}"
+                                                      onsubmit="{!c.handleSubmit}"
+                                                      oncancel="{!c.closeModel}">
+                                    
+                                </lightning:recordForm>
+                            </aura:if>
+                            
+                            <aura:if isTrue="{!v.showQueue}">
+                                <div class="slds-form-element slds-form-element_stacked">
+                                    <div class="slds-form-element__control">
+                                        <lightning:select name="queue" label="Queue" value="{!v.queueSelected}" required="true">
+                                            <aura:iteration items="{!v.queueOptions}" var="queue">\
+                                                <option text="{!queue.label}" value="{!queue.value}"> </option>
+                                            </aura:iteration>
+                                        </lightning:select>
+                                    </div>
+                                </div>           
+                            </aura:if>
+                            
+                            <!-- Since record form (line 126) includes buttons,-->
+                            <!-- don't display below buttons when user assigns record to a user -->
+                            <aura:if isTrue="{!v.showButton}">
+                                <div class="slds-align_absolute-center slds-p-vertical_medium">
+                                    <div class="slds-p-horizontal_xx-small">
+                                        <lightning:button variant="Neutral" label="Cancel" title="Cancel" onclick="{! c.closeModel }" />
+                                    </div>
+                                    <div class="slds-p-horizontal_xx-small">
+                                        <lightning:button variant="brand" label="Save" title="Save" onclick="{! c.handleTaskCreate }" />
+                                    </div>
+                                </div>
+                            </aura:if>
+                            
+                            <!-- Spinner will be displayed when task is being saved -->
+                            <aura:if isTrue="{!v.showSpinnerForTask}">
+                                <div>
+                                    <lightning:spinner alternativeText="Loading" size="large" />
+                                </div>                
+                            </aura:if>
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </aura:if>
+    </div>
+</aura:component>
