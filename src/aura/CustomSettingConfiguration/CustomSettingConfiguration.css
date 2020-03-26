@@ -1,0 +1,17 @@
+.THIS {
+}.THIS .card{
+    
+    padding-left: 3%;
+    padding-right: 3%;
+    padding-bottom: 3%;
+}.THIS .button{
+    text-align: center;
+}.THIS .ButtonRight{
+    text-align: right;
+}.THIS .Datatable{
+    height: 500px;
+    padding-top: 3%;
+    padding-left: 3%;
+    padding-right: 3%;
+    padding-bottom: 3%;
+}

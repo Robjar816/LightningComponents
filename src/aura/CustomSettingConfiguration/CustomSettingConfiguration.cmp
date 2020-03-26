@@ -1,0 +1,102 @@
+<!--
+Aura Component: CustomSettingConfiguration
+Created By: Sahil Handa
+Created On: 02-19-2020
+Description: This component is for providing the UI for the users to Create/Edit/View/Delete the custom setting named RO_OAE_Template__c
+-->
+<aura:component Controller = "CustomSettingController_AC" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+    
+    <aura:attribute name="tname" type="String" access="public"/>
+    <aura:attribute name="tbody" type="String" access="public"/>
+    <aura:attribute name="recordView" type="Object" access="public"/>
+    <aura:attribute name="selectedRecord" type="Object" access="public"/>
+    <aura:attribute name="showCreateLayout" type="Boolean" default = "false" access="public"/>
+    <aura:attribute name="showNewLayout" type="Boolean" default = "false" access="public"/>
+    <aura:attribute name="showViewLayout" type="Boolean" default = "false" access="public"/>
+    <aura:attribute name="showEditLayout" type="Boolean" default = "false" access="public"/>
+    <aura:attribute name="filteredData" type="List"/>
+    <aura:attribute name="columns" type="List"/>
+       
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+
+    <div class = "card">
+        <lightning:card  >
+            <div class="button">
+                <lightning:button variant="brand" label="New Template" title="New Template" onclick="{! c.createTemplate }" />
+            </div>
+            <div class = "Datatable">
+                <lightning:datatable
+                                     aura:id = "customSettingTable"
+                                     columns = "{!v.columns}"
+                                     data = "{!v.filteredData}"
+                                     keyField = "Id"
+                                     onrowaction="{!c.handleRowAction}"
+                                     hideCheckboxColumn="true"/>
+            </div>
+        </lightning:card>
+        <aura:if isTrue="{!v.showCreateLayout}">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closeModel }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <aura:if isTrue="{!v.showNewLayout}">
+                            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Create New Template</h2>
+                        </aura:if> 
+                        <aura:if isTrue="{!v.showViewLayout}">
+                            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">View</h2>
+                        </aura:if>
+                        <aura:if isTrue="{!v.showEditLayout}">
+                            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Edit</h2>
+                        </aura:if>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <div class="slds-form">
+                            <div class="slds-form-element slds-form-element_stacked">
+                                <label class="slds-form-element__label" for="stacked-input-id-01">Name of the Template</label>
+                                <div class="slds-form-element__control">
+                                    <aura:if isTrue="{!v.showViewLayout}">
+                                        <label class="slds-form-element__label" for="stacked-input-id-01">{! v.recordView.Name}</label>
+                                        <aura:set attribute="else">
+                                            <lightning:input type="text" value="{! v.tname}" /> 
+                                        </aura:set>                                        
+                                    </aura:if>
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-form-element_stacked">
+                                <label class="slds-form-element__label" for="stacked-input-id-02">Body of the Template</label>
+                                <div class="slds-form-element__control">
+                                    <aura:if isTrue="{!v.showViewLayout}">
+                                        <lightning:formattedRichText value = "{! v.recordView.Body__c}"></lightning:formattedRichText>
+                                        <aura:set attribute="else">
+                                            <lightning:inputRichText value="{!v.tbody}" />
+                                        </aura:set>                                        
+                                    </aura:if>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{! c.closeModel }"/>
+                        <aura:if isTrue="{!v.showViewLayout}">
+                            <!--lightning:button variant="brand" 
+                                              label="Edit Template"
+                                              title="Edit Template"
+                                              onclick="{! c.handleEdit }"/-->
+                        </aura:if>
+                        <aura:if isTrue="{!v.showNewLayout}">
+                            <lightning:button variant="brand" label="Save" title="Save" onclick="{! c.handleSave }"/>
+                        </aura:if>  
+                        <aura:if isTrue="{!v.showEditLayout}">
+                            <lightning:button variant="brand" label="Save" title="Save" onclick="{! c.handleEditSave }"/>
+                        </aura:if>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </aura:if>
+    </div>
+</aura:component>
