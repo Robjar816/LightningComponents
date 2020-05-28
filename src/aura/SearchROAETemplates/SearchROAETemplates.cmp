@@ -10,7 +10,7 @@
     
     <!-- Pagination Attributes -->
     <aura:attribute name="pageNumber" type="Integer" default="1"/>
-    <aura:attribute name="pageSize" type="Integer" default="5"/>
+    <aura:attribute name="pageSize" type="Integer" default="1000"/>
     <aura:attribute name="totalPages" type="Integer" default="0"/>
     <aura:attribute name="totalRecords" type="Integer" default="0"/>
     <aura:attribute name="recordStart" type="Integer" default="0"/>
@@ -46,9 +46,9 @@
                         </div>
                         <div class="slds-float_right slds-col slds-size_3-of-12 slds-p-vertical_medium">
                             <lightning:select name="pageSize" label="Templates per page:" value="{!v.pageSize}" onchange="{!c.handleChangePageSize}">
-                                <option value="5">5</option>
                                 <option value="10">10</option>
                                 <option value="20">20</option>
+                                <option value="1000">View All</option>
                             </lightning:select>
                         </div>
                     </div>

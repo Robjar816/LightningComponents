@@ -1,0 +1,60 @@
+<aura:component controller="DisplayActionsController_AC" implements="force:appHostable,force:lightningQuickActionWithoutHeader,force:hasRecordId" access="global">
+    <!-- Handler -->
+    <aura:registerEvent name="closeParentComponent" type="c:ViewEditActionEvent" />
+    
+    <!-- Attributes -->
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="actionId" type="String"/>
+    
+    
+    
+    <!--Custom Styles for Modal Header and Footer--> 
+    <aura:html tag="style">
+        .cuf-content {
+        padding: 0 0rem !important;
+        }
+        .slds-p-around--medium {
+        padding: 0rem !important;
+        }       
+        .slds-modal__content{
+        overflow-y:hidden !important;
+        height:unset !important;
+        max-height:unset !important;
+        }
+        .slds-modal__header{
+        background:none !important;
+        }
+        .slds-modal__footer {
+        background-color: rgb(243, 242, 242);
+        }
+        
+    </aura:html>
+    
+    <!--Modal Header-->  
+    <div class="modal-header slds-modal__header slds-size_1-of-1" align="left">
+        <h4 class="title slds-text-heading--medium">Delete Action</h4>
+        <lightning:buttonIcon iconName="utility:close"
+                                          size="large"
+                                          onclick="{! c.handleClose }"
+                                          alternativeText="close"
+                                          variant="bare-inverse"
+                                          class="slds-modal__close"/>
+    </div>
+    <!--End Modal Header-->  
+    
+    <!--Modal Body-->   
+    <div align="center">
+        <div class="outerBox">
+            <p>Are you sure you want to delete this Action?</p>
+        </div>
+    </div>
+    <!--End of Modal Body-->
+    
+    <!--Modal Footer-->
+    <div class="modal-footer slds-modal__footer slds-size_1-of-1 slds-align_absolute-center">
+        <lightning:button variant="Neutral" label="Cancel" title="Click to cancel" onclick="{!c.handleClose}" />        
+        <lightning:button variant="Brand" label="Delete" title="Click to delete" onclick="{!c.handleDelete}" />
+    </div>
+    <!--End of Modal Footer--> 
+    
+</aura:component>

@@ -19,6 +19,9 @@ public class CustomTemplateController {
     public String templateBody;  //Used to store the template body
     
     @AuraEnabled
+    public String autoTaskName; //Used to store related Auto Task
+    
+    @AuraEnabled
     public List<String> metadataList; //Used to store the template names
     
     @AuraEnabled
@@ -95,7 +98,10 @@ public class CustomTemplateController {
     } 
     
     @AuraEnabled //Create Task
-    public static CustomTemplateController saveTask (String subject, String noteBody, Boolean rush, Date dueDate, String assignmentGroup, String taskType, String notes, String assignToId, String recordId){
+    public static CustomTemplateController saveTask (String subject, String noteBody, Boolean rush, Date dueDate, String assignmentGroup, 
+                                                     String taskType, String notes, String assignToId, String recordId, String templateSelected){
+        
+        Savepoint sp = Database.setSavepoint();
         
         CustomTemplateController controller = new CustomTemplateController();
         controller.hasError = false;
@@ -117,15 +123,30 @@ public class CustomTemplateController {
                                             Status = 'Open',
                                             RecordTypeId = taskRecordType);
             
-            System.debug('taskToBeCreated in create task = ' + taskToBeCreated);
             String userMessage = checkRequiredFields(taskToBeCreated);
             
             if(String.isNotBlank(userMessage) || String.isNotEmpty(userMessage)) {
                 controller.userMessage = userMessage;
             }else {
+                //Run Auto Task
+                if(String.isNotBlank(templateSelected)) {
+                    List<RO_OAE_Template__c> template = [SELECT Id, Name, Auto_Task__c FROM RO_OAE_Template__c WHERE Name =: templateSelected LIMIT 1];
+                    if(!template.isEmpty() && String.isNotBlank(template[0].Auto_Task__c)) {
+                        RunAutoTaskController_AC.runAutoTasks(recordId, template[0].Auto_Task__c, taskToBeCreated, false);
+                    }
+                }
                 insert taskToBeCreated;
+                
+                //Create note if task was created
                 List<Task> newTask = [SELECT Id FROM Task WHERE Id =: taskToBeCreated.Id];
-                saveNotes(subject, noteBody, Id.valueOf(newTask[0].Id));
+                if(newTask != null){
+                    CustomTemplateController noteController = saveNotes(subject, noteBody, Id.valueOf(newTask[0].Id));
+                    if(noteController.hasError) {
+                        controller.hasError = noteController.hasError;
+                        controller.errorMessage = noteController.errorMessage;
+                        Database.rollback(sp);
+                    }
+                }
             }
         }catch(Exception e) {
             controller.hasError = true;
@@ -139,34 +160,51 @@ public class CustomTemplateController {
     public static CustomTemplateController saveNotes (String noteTitle, String noteBody, String recordId){
         CustomTemplateController controller = new CustomTemplateController();
         controller.hasError = false;
-        controller.errorMessage = '';
-        controller.userMessage = '';
-        
-        System.debug('Notebody = ' + notebody);
+        String userMessage;
         
         if(noteBody=='' || noteBody==null){
             controller.userMessage = 'Please enter text to template.';
         }else {
             try{
+                
+                String body = noteBody.replaceAll('&gt;', 'greater');
+                body = body.replaceAll('&lt;', 'less');
+                body = body.escapeHtml4();
+                body = body.unescapeHtml4();
+                body = body.replaceAll('\'', '&#39;');
+                body = body.replaceAll('\"', '&quot;');
+                body = body.replaceAll('&', '&amp;');
+                body = body.replaceAll('greater', '&gt;');
+                body = body.replaceAll('less', '&lt;');
+                Blob blobBody = Blob.valueOf(body);
+                String encodedBody = EncodingUtil.base64Encode(blobBody);
+                //System.debug(body + ' is now encoded as: ' + encodedBody);
+                Blob decodedBody = EncodingUtil.base64Decode(encodedBody.unescapeHtml4());
+                //System.debug(encodedBody + 'is now decoded as: ' + decodedBody.toString());
+
                 ContentVersion cv =new ContentVersion();
                 cv.Title = noteTitle;
-                system.debug('noteBody'+Blob.valueOf(noteBody));
-                cv.VersionData = Blob.valueOf(noteBody);
+                cv.VersionData = decodedBody;//Blob.valueOf(noteBody);
                 cv.FirstPublishLocationId = recordId;
                 cv.PathOnClient = cv.Title+'.snote';
                 insert cv;
                 
             } catch(Exception ex){
                 controller.hasError = true;
-                controller.errorMessage = 'Exception:'+ ex.getMessage();
-                system.debug('Exception'+ ex.getMessage());
+                if(ex.getMessage().contains('UNSAFE_HTML_CONTENT')) {
+                    controller.errorMessage = ' Note can\'t be saved because it contains HTML tags or ' +
+                        'unescaped characters that are not allowed in a Note. Please use copy and paste best practices.';
+                }else {
+                    controller.errorMessage = 'Exception:'+ ex.getMessage();
+                }
+                system.debug('Exception: '+ ex.getMessage());
             }
         }
         return controller;
     }
     
     @AuraEnabled //Get ROAE_Assignment_Group__c, ROAE_Task_Type__c picklist values, and Task queues
-    public static CustomTemplateController getPicklistValues(){
+    public static CustomTemplateController getPicklistValues(String templateName){
         CustomTemplateController controller = new CustomTemplateController();
         controller.assignmentGrouptoptions = new List<String>();
         controller.taskTypeOptions = new List<String>();
@@ -191,6 +229,9 @@ public class CustomTemplateController {
         
         //Get all Task Queues
         controller.queueMap = getTaskQueues();
+        
+        //Get related Auto Task
+        controller.autoTaskName = getAutoTaskName(templateName);
         
         return controller;
     }
@@ -220,8 +261,6 @@ public class CustomTemplateController {
                 }
             }
         }
-        System.debug('dependentPicklistValues = ' + dependentPicklistValues);
-        
         return dependentPicklistValues;
     }
     
@@ -231,22 +270,19 @@ public class CustomTemplateController {
         for(QueueSobject queue : [SELECT QueueId, Queue.Name FROM QueueSobject WHERE SobjectType = 'Task']) {
             queueMap.put(queue.Queue.Name, queue.QueueId);
         }
-        System.debug('queueMap = ' + queueMap);
         return queueMap;
     }
     
     //Checks if required fields are populated. Required fields are set in custom metadata
     private static String checkRequiredFields(Task taskRecord){
-        System.debug('taskToBeCreated in checkRequiredFields = ' + taskRecord);
         String userMessage = '';
         DescribeSObjectResult describe = SObjectType.Task;
         Map<String, SObjectField> allFields = describe.fields.getMap(); 
         Set<String> requiredFieldsSet = new Set<String>();
         Map<String, Required_Fields_on_Task__mdt> accRequiredFieldMap = new Map<String, Required_Fields_on_Task__mdt>();
         
-        
         //Get required fields from the custom meta data
-        for (Required_Fields_on_Task__mdt currentSetting : [SELECT Label, FieldSet__c FROM Required_Fields_on_Task__mdt LIMIT 1]) {
+        for (Required_Fields_on_Task__mdt currentSetting : [SELECT Label, FieldSet__c FROM Required_Fields_on_Task__mdt WHERE Label = 'ROAE_RequiredFields' LIMIT 1]) {
             if(!String.isBlank(currentSetting.FieldSet__c) && currentSetting.FieldSet__c.split(';') != null){
                 for(String fieldName : currentSetting.FieldSet__c.split(';')){
                     requiredFieldsSet.add(fieldName);
@@ -259,12 +295,21 @@ public class CustomTemplateController {
             if(String.isBlank(String.valueOf(taskRecord.get(fieldName)))) {
                 DescribeFieldResult nameDescribe = allFields.get(fieldName).getDescribe();
                 if(String.isBlank(userMessage)) {
-                    userMessage += 'These required fields must be completed: ' + nameDescribe.getLabel();
+                    userMessage += 'The following required field(s) must be completed: ' + nameDescribe.getLabel();
                 } else {
                     userMessage += +', '+nameDescribe.getLabel();
                 }
             }
         }
         return userMessage;
+    }
+    
+    //Get related auto task name
+    private static String getAutoTaskName(String templateName) {
+        List<RO_OAE_Template__c> templates = [SELECT Id, Auto_Task__r.Name FROM RO_OAE_Template__c WHERE Name =: templateName LIMIT 1];
+        if(!templates.isEmpty()) {
+            return templates[0].Auto_Task__r.Name;
+        }
+        return null;
     }
 }

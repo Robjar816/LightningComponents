@@ -1,0 +1,246 @@
+<aura:component controller="sendEmailComponentController"
+    implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+    access="global">
+    
+    <!--Part 1 [for attribute declare]-->
+    <aura:attribute name="loaded" type="Boolean" default="true" />
+    <aura:attribute name="caseId" type="Object" />
+    <aura:attribute name="email" type="string" />    
+    <aura:attribute name="ccEmail" type="string" />
+    <aura:attribute name="subject" type="string" />
+    <aura:attribute name="body" type="string" />
+    <aura:attribute name="mailStatus" type="boolean" default="false" />
+    <aura:attribute name="errorStatus" type="boolean" default="false" />
+    <aura:attribute name="errorMessage" type="string" />
+    <aura:attribute name="emailfolderVSTemplateList" type="object[]" default="[]" />
+    <aura:attribute name="emailFolderList" type="object[]" default="[]" />
+    <aura:attribute name="emailTemplateList" type="object[]" default="[]" />
+    <aura:attribute name="emailbody" type="String" default="" />
+    <aura:attribute name="folderId1" type="String" default="" />
+    <aura:attribute name="templateIDs" type="String" default="" />
+    <aura:attribute name="sendTo" type="String" default="User" />
+    <aura:attribute name="fromAddresses" type="String[]" default="[]" />
+    <aura:attribute name="fromAddress" type="String" default="" />
+    <aura:attribute name="user" type="String[]" default="['ROAE_Email_Send_To_User__c']" />
+    <aura:attribute name="contact" type="String[]" default="['ROAE_Email_Send_To_Contact__c']" />  
+    <aura:attribute name="showUser" type="Boolean" default="true"/>
+    <aura:attribute name="showContact" type="Boolean" default="false"/>
+    <aura:attribute name="CaseRecord" type="Object" description="A simplified view record object to be displayed"/>
+    <aura:attribute name="attachmentIds" type="String[]" default="[]" />
+    <aura:attribute name="numberAttachments" type="String" default="0" />
+	<aura:attribute name="spinner" type="boolean" default="false" />
+	<aura:attribute name="folderDefault" type="String" default="Please Select Folder" />
+	<aura:attribute name="templateDefaul" type="String" default="Please Select Template" /> 
+
+    <force:recordData aura:id="record"
+                      layoutType="FULL"
+                      recordId="{!v.recordId}"
+                      targetFields="{!v.CaseRecord }"
+                      mode="VIEW"/>    
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <!--<aura:handler event="aura:waiting" action="{!c.showSpinner}"/>
+    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>-->    
+
+    <!--<section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aura:id="Modalbox" aria-modal="true"
+        aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">-->
+        <div class="card">
+            
+             <aura:if isTrue="{!v.spinner}">
+                <div aura:id="spinnerId" class="slds-spinner_container">
+                   <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                     <span class="slds-assistive-text">Loading</span>
+                     <div class="slds-spinner__dot-a"></div>
+                     <div class="slds-spinner__dot-b"></div>
+                   </div>
+                </div>
+             </aura:if>            
+            
+            <header class="slds-modal__header">
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                    onclick="{!c.closeModal}">
+                    <lightning:icon iconName="utility:close" size="xx-small" />
+                    <span class="slds-assistive-text">Close</span>
+                </button>
+                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Send Email</h2>
+            </header>
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                <!--- [header part] -->
+                
+                <!--- [success message display part] -->
+                <aura:if isTrue="{!v.mailStatus}">
+                    <div role="alertdialog" tabindex="-1" aria-labelledby="prompt-heading-id"
+                        aria-describedby="prompt-message-wrapper"
+                        class="slds-modal slds-fade-in-open slds-modal--prompt">
+                        <div class="slds-modal__container">
+                            <div class="slds-modal__header slds-theme--success slds-theme--alert-texture">
+                                <h2 class="slds-text-heading--medium" id="prompt-heading-id">Mail Status</h2>
+                            </div>
+                            <div class="slds-modal__content slds-p-around--medium">
+                                <div>
+                                    <p>Email Sent successfully!</p>
+                                </div>
+                            </div>
+                            <div class="slds-modal__footer slds-theme--default">
+                                <button class="slds-button slds-button--brand"
+                                    onclick="{!c.closeMessage}">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-backdrop slds-backdrop--open"></div>
+                </aura:if>
+                <!--<div class="exampleHolder">
+                    <aura:if isTrue="{!v.loaded }">
+                        <lightning:spinner alternativeText="Loading" />
+                    </aura:if>
+                </div>-->
+                
+                <!--- [error message display part] -->
+                <aura:if isTrue="{!v.errorStatus}">
+                    <div role="alertdialog" tabindex="-1" aria-labelledby="prompt-heading-id"
+                        aria-describedby="prompt-message-wrapper"
+                        class="slds-modal slds-fade-in-open slds-modal--prompt">
+                        <div class="slds-modal__container">
+                            <div class="slds-modal__header slds-theme--error slds-theme--alert-texture">
+                                <h2 class="slds-text-heading--medium" id="prompt-heading-id">Mail Status</h2>
+                            </div>
+                            <div class="slds-modal__content slds-p-around--medium">
+                                <div>
+                                    <ui:outputText value="{!v.errorMessage}"/>
+                                </div>
+                            </div>
+                            <div class="slds-modal__footer slds-theme--default">
+                                <button class="slds-button slds-button--brand"
+                                    onclick="{!c.closeMessage}">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-backdrop slds-backdrop--open"></div>
+                </aura:if>
+                <!--<div class="exampleHolder">
+                    <aura:if isTrue="{! v.loaded }">
+                        <lightning:spinner alternativeText="Loading" />
+                    </aura:if>
+                </div>-->
+                
+                <!--- [mail form part] -->
+                <div class="slds-m-around--medium">
+                    <div class="slds-container--medium">
+                        <div class="slds-form--stacked">
+                            <!--Test for template -->
+                            <label><b></b></label>
+                            <div class="slds-form-element__control">
+                                <div class="slds-form-element" aura:id="selectFolder">
+                                    <label class="slds-form-element__label" for="select-Folder">Select Folder</label>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-select_container">
+                                            <select class="slds-select" aura:id="select-Folder"
+                                                onchange="{!c.onSelectEmailFolder}">
+                                                <option id="folder-option" value="">Please Select Folder</option>
+                                                <aura:iteration items="{!v.emailfolderVSTemplateList}" var="folder">
+                                                    <option aura:id="folder-selected" value="{!folder.folderId}">{!folder.folderName}</option>
+                                                </aura:iteration>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="slds-form-element" aura:id="selectTemplate">
+                                    <label class="slds-form-element__label" for="select-Template">Select
+                                        Template</label>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-select_container">
+                                            <select class="slds-select" aura:id="select-Template"
+                                                onchange="{!c.onSelectEmailTemplate}">
+                                                <option aura:id="folder-default-value" value="">Please Select Email Template</option>
+                                                <aura:iteration items="{!v.emailTemplateList}" var="template">
+                                                    <option aura:id="template-selected" value="{!template.emailTemplateId}">
+                                                        {!template.emailTemplatename}</option>
+                                                </aura:iteration>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>                              
+
+                                <div class="slds-form-element slds-form-element_stacked">
+                                	<div class="slds-form-element__control">
+                                    	<lightning:select name="from" label="From" value="{!v.fromAddress}" required="true">
+                                        	<!--<option value=""></option>-->
+                                            <aura:iteration items="{!v.fromAddresses}" var="fromAddress">
+                                                <option aura:id="from-address-selected" value="{!fromAddress}" text="{!fromAddress}"></option>
+                                            </aura:iteration>
+                                    	</lightning:select>
+                                	</div>
+                            	</div>			
+                                
+                                <div class="slds-form-element slds-form-element_stacked">
+                                	<div class="slds-form-element__control">
+                                    	<lightning:select name="sendTo" label="Send To" value="{!v.sendTo}" onchange="{!c.handleSendTo}" required="true">
+                                        	<!--<option value=""></option>-->
+                                        	<option value="User">User</option>
+                                        	<option value="Contact">Contact</option>
+                                    	</lightning:select>
+                                	</div>
+                            	</div>
+                            
+                            	<aura:if isTrue="{!v.showUser}">
+                                    <lightning:recordEditForm recordId="{!v.recordId}" objectApiName="Case">
+                                        <lightning:messages />
+                                        <lightning:inputField aura:id="sendToUserValue" fieldName="ROAE_Email_Send_To_User__c" />
+                                    </lightning:recordEditForm>
+                            	</aura:if>
+                                
+                                <aura:if isTrue="{!v.showContact}">
+                                    <lightning:recordEditForm recordId="{!v.recordId}" objectApiName="Case">
+                                        <lightning:messages />
+                                        <lightning:inputField aura:id="sendToContactValue" fieldName="ROAE_Email_Send_To_Contact__c" />
+                                    </lightning:recordEditForm>
+                            	</aura:if>
+
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label" for="CC">CC Email</label>
+                                    <div class="slds-form-element__control">
+                                        <ui:inputEmail class="slds-input" aura:id="ccEmail" value="{!v.ccEmail}"
+                                            required="true" placeholder="abc@email.com; xyz@email.com" />
+                                    </div>
+                                </div>
+                                
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label" for="CC">Subject</label>
+                                    <div class="slds-form-element__control">
+                                        <ui:inputText class="slds-input" aura:id="subject" value="{!v.subject}"
+                                            placeholder="Subject" />
+                                    </div>
+                                </div>
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label" for="textareaSample2">Mail Body</label>
+                                    <div class="slds-form-element__control">
+                                        <lightning:inputRichText aura:id="body" value="{!v.emailbody}" />
+                                    </div>
+                                </div>
+                                
+                                    <lightning:fileUpload label="Attach File"
+                                                          name="fileUploader"
+                                                          multiple="true"
+                                                          recordId="{!v.recordId}"
+                                                          onuploadfinished="{!c.handleUploadFinished}" />
+                                
+                                <br />
+                                	<aura:if isTrue="{!v.numberAttachments != '0'}">
+                                        Files Attached:  <ui:outputText value="{!v.numberAttachments}"/>
+                                	</aura:if>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <footer class="slds-modal__footer">
+                <button class="slds-button slds-button_neutral" onclick="{!c.closeMessage}">Cancel</button>
+                <button class="slds-button slds-button_brand" onclick="{!c.sendMail}">Send</button>
+            </footer>
+        </div>
+    <!--</section>-->
+    <!--<div class="slds-backdrop slds-backdrop_open"></div>-->
+</aura:component>

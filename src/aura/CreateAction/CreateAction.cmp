@@ -1,0 +1,177 @@
+<aura:component  implements="force:appHostable,force:lightningQuickActionWithoutHeader,force:hasRecordId,lightning:availableForFlowScreens" access="global" controller="CreateActionController_AC">
+    <!-- Handler -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:registerEvent name="closeParentComponent" type="c:ViewEditActionEvent" />
+    <aura:registerEvent name="refreshDatatable" type="c:RefreshDisplayActions" />
+    
+    <!-- Attributes -->
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="actionId" type="String"/>
+    <aura:attribute name="errors" type="string" default=""/>
+    <aura:attribute name="fieldMap" type="Map"/>
+    <aura:attribute name="layoutMap" type="Map"/>
+    
+    <!-- Field Attributes -->
+    <aura:attribute name="title" type="String" default="New Action: Update Field Action"/>
+    <aura:attribute name="actionName" type="String"/>
+    <aura:attribute name="objectToUpdate" type="String"/>
+    <aura:attribute name="fieldSelected" type="String"/>
+    <aura:attribute name="fieldOptions" type="List"/>
+    <aura:attribute name="assignTo" type="String"/>
+    <aura:attribute name="queueOptions" type="List"/>
+    <aura:attribute name="taskQueueOptions" type="List"/>
+    <aura:attribute name="caseQueueOptions" type="List"/>
+    <aura:attribute name="queueSelected" type="String"/>
+    <aura:attribute name="userId" type="String"/>
+    <aura:attribute name="newValue" type="String"/>
+    <aura:attribute name="layoutSelected" type="String"/>
+    <aura:attribute name="layoutOptions" type="List"/>
+    <aura:attribute name="showSpinner" type="Boolean" default="true"/>
+    <aura:attribute name="editMode" type="Boolean" default="false"/>
+    
+    <!--Custom Styles for Modal Header and Footer--> 
+    <aura:html tag="style">
+        .cuf-content {
+        padding: 0 0rem !important;
+        }
+        .slds-p-around--medium {
+        padding: 0rem !important;
+        }       
+        .slds-modal__content{
+        overflow-y:hidden !important;
+        height:unset !important;
+        max-height:unset !important;
+        }
+        .slds-align_absolute-center{
+        background:none !important;
+        border:none !important;
+        }
+    </aura:html>
+    
+    <!--Modal Header-->  
+    <div class="modal-header slds-modal__header slds-size_1-of-1" align="left">
+        <h4 class="title slds-text-heading--medium">{!v.title}</h4>
+        <lightning:buttonIcon iconName="utility:close"
+                                          size="large"
+                                          onclick="{! c.handleClose }"
+                                          alternativeText="close"
+                                          variant="bare-inverse"
+                                          class="slds-modal__close"/>
+    </div>
+    <!--End Modal Header-->  
+    
+    <!--Modal Body-->   
+    <div style="margin:25px;">
+        <lightning:recordEditForm objectApiName="Action__c" recordId="{!v.actionId}">
+            <lightning:messages />
+            <div class="outerBox">
+                <!-- Spinner will be displayed when loading component -->
+                <aura:if isTrue="{!v.showSpinner}">
+                    <div>
+                        <lightning:spinner alternativeText="Loading" size="large" />
+                    </div>                
+                </aura:if>
+                
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning:inputField fieldName="Name" value="{!v.actionName}" required="true"/>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning:inputField fieldName="Auto_Task__c" value="{!v.recordId}" required="true"/>
+                    </div>
+                </div>
+                
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning:inputField fieldName="Object__c" value="{!v.objectToUpdate}" required="true" 
+                                              onchange="{!c.handleObjectChange}"/>
+                    </div>
+                    
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-form-element slds-form-element_stacked">
+                            <div class="slds-form-element__control">
+                                <lightning:select name="layout" label="Layout" value="{!v.layoutSelected}" required="true"
+                                                  title="Please select an Object first." onchange="{!c.handleLayoutChange}"
+                                                  disabled="{!v.objectToUpdate == ''}">
+                                    <aura:iteration items="{!v.layoutOptions}" var="layoutOption">
+                                        <option text="{!layoutOption.label}" value="{!layoutOption.value}" 
+                                                selected="{!layoutOption.value == v.layoutSelected}"> </option>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-form-element slds-form-element_stacked">
+                            <div class="slds-form-element__control">
+                                <lightning:select name="autoTask" label="Field To Update" value="{!v.fieldSelected}" required="true"
+                                                  title="Please select a layout first." 
+                                                  disabled="{!v.layoutSelected == ''}" >
+                                    <aura:iteration items="{!v.fieldOptions}" var="fieldOption">
+                                        <option text="{!fieldOption.label}" value="{!fieldOption.value}"
+                                                selected="{!fieldOption.value == v.fieldSelected}"> </option>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <aura:if isTrue="{!v.fieldSelected != 'OwnerId' &amp;&amp; v.fieldSelected != 'Assigned To ID'}">
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning:inputField fieldName="New_Value__c" value="{!v.newValue}" required="true"/>
+                        </div>
+                        <aura:set attribute="else">
+                            <div class="slds-col slds-size_1-of-2">
+                                <div class="slds-form-element slds-form-element_stacked">
+                                    <div class="slds-form-element__control">
+                                        <lightning:select name="select1" label="Assign To" value="{!v.assignTo}" required="true">
+                                            <option value=""></option>
+                                            <option value="Queue">Queue</option>
+                                            <option value="User">User</option>
+                                        </lightning:select>
+                                    </div>
+                                </div>
+                            </div>
+                        </aura:set>
+                    </aura:if>
+                </div>
+                
+                <aura:if isTrue="{!v.fieldSelected == 'OwnerId' || v.fieldSelected == 'Assigned To ID'}">
+                    <div class="slds-grid">
+                        <div class="slds-col slds-size_2-of-2">
+                            <aura:if isTrue="{!v.assignTo == 'User'}">
+                                <lightning:inputField fieldName="New_Owner__c" value="{!v.userId}" required="true"/>
+                                
+                                <aura:set attribute="else">
+                                    <div class="slds-form-element slds-form-element_stacked">
+                                        <div class="slds-form-element__control">
+                                            <lightning:select name="queue" label="New Owner" value="{!v.queueSelected}" required="true"
+                                                              disabled="{!v.assignTo == ''}" title="Please select an Assign To option first.">
+                                                <aura:iteration items="{!v.queueOptions}" var="queue">\
+                                                    <option text="{!queue.label}" value="{!queue.value}"> </option>
+                                                </aura:iteration>
+                                            </lightning:select>
+                                        </div>
+                                    </div>
+                                </aura:set>
+                            </aura:if>
+                        </div>
+                    </div>
+                </aura:if>
+            </div>
+        </lightning:recordEditForm>
+    </div>
+    <!--End of Modal Body-->
+    
+    <!--Modal Footer-->
+    <div class="modal-footer slds-modal__footer slds-size_1-of-1 slds-align_absolute-center">
+        <lightning:button variant="Neutral" label="Cancel" title="Click to cancel" onclick="{!c.handleClose}" />        
+        <lightning:button variant="Brand" label="Save" title="Click to save" onclick="{!c.handleSave}" />
+    </div>
+    <!--End of Modal Footer--> 
+    
+</aura:component>

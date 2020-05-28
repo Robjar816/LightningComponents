@@ -30,6 +30,8 @@
     <aura:attribute name="showSpinnerForTask" type="Boolean" default="false"/>
     <aura:attribute name="showSpinnerForNote" type="Boolean" default="false"/>
     <aura:attribute name="callChildComp" type="Boolean" default="false"/>
+    <aura:attribute name="tempSelectedToFindAutoTask" type="String"/>
+    <aura:attribute name="relatedAutoTask" type="String"/>
     
     <lightning:notificationsLibrary aura:id="notifLib"/>
     <aura:attribute name="tbody" type="String" access="public"/>
@@ -57,7 +59,7 @@
             <br/>
             
             <div align ="center">
-                <lightning:button variant="brand" label="Create Notes" title="Create Notes" onclick="{! c.handleNote }" /> 
+                <lightning:button variant="brand" label="Create Note" title="Create Note" onclick="{! c.handleNote }" /> 
                 <lightning:button variant="brand" label="Create Task" title="Create Task" onclick="{! c.handleTask }" />
             </div>
             
@@ -85,6 +87,13 @@
                     </header>
                     <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
                         <div class="slds-form">
+                            <aura:if isTrue="{!v.relatedAutoTask}">
+                                <div class="slds-clearfix">
+                                    <div class="slds-float_right align_right">
+                                        <p>Auto Task: {!v.relatedAutoTask}</p>
+                                    </div>
+                                </div>
+                            </aura:if>
                             <div class="slds-form-element slds-form-element_stacked">
                                 <div class="slds-form-element__control">
                                     <lightning:input type="text" value="{!v.subject}" label="Subject" required="true"/> 
@@ -163,7 +172,7 @@
                                 </div>           
                             </aura:if>
                             
-                            <!-- Since record form (line 126) includes buttons,-->
+                            <!-- Since record form (line 146) includes buttons,-->
                             <!-- don't display below buttons when user assigns record to a user -->
                             <aura:if isTrue="{!v.showButton}">
                                 <div class="slds-align_absolute-center slds-p-vertical_medium">

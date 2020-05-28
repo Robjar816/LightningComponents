@@ -1,0 +1,127 @@
+<aura:component controller="DisplayActionsController_AC" implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId" access="global">
+    <!-- Handler -->
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <aura:handler name="closeParentComponent" event="c:ViewEditActionEvent" action="{!c.closeModel}"/>
+    <aura:handler event="c:RefreshDisplayActions" action="{!c.closeModel}"/>
+    
+    <!-- Attributes -->
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="actionId" type="String"/>
+    <aura:attribute name="layout" type="String"/>
+    <aura:attribute name="totalRecords" type="Integer"/>
+    <aura:attribute name="data" type="List"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="showSpinner" type="Boolean" default="false"/>
+    <aura:attribute name="editRecord" type="Boolean" default="false"/>
+    <aura:attribute name="deleteRecord" type="Boolean" default="false"/>
+    <aura:attribute name="actionType" type="String" default="Update Field Action"/>
+    
+    
+    <div class = "card">
+        <aura:if isTrue="{!not(empty(v.data))}">
+            <lightning:card  title="{!v.actionType}" iconName="custom:custom67">
+                <aura:set attribute="actions">
+                    <lightning:buttonIcon iconName="utility:refresh" variant="border-filled" alternativeText="Refresh" onclick="{!c.handleRefresh}"/>
+                </aura:set>
+                
+                <div class="slds-p-left_medium slds-p-bottom_small">
+                    <ul class="slds-list_horizontal slds-has-dividers_left">
+                        <li class="slds-item">{!v.totalRecords} items</li>
+                        <aura:if isTrue="{!v.actionType == 'Update Field Action'}">
+                            <li class="slds-item">Sorted by Object</li>
+                            <aura:set attribute="else">
+                                <li class="slds-item">Sorted by Name</li>
+                            </aura:set>
+                        </aura:if>
+                    </ul>
+                </div>
+                <div class = "Datatable">
+                    <lightning:datatable
+                                         aura:id = "customSettingTable"
+                                         columns = "{!v.columns}"
+                                         data = "{!v.data}"
+                                         keyField = "Id"
+                                         onrowaction="{!c.handleRowAction}"
+                                         showRowNumberColumn="true"
+                                         hideCheckboxColumn="true"/>
+                </div>
+                
+                <aura:if isTrue="{!v.showSpinner}">
+                    <lightning:spinner alternativeText="Loading" size="medium" />
+                </aura:if>
+                
+            </lightning:card>
+            <aura:set attribute="else">
+                {!v.actionType} does not exist.
+            </aura:set>
+        </aura:if>
+    </div>
+    
+    <!-- Open CreateAction Component -->
+    <aura:if isTrue="{!v.editRecord &amp;&amp; v.actionType == 'Update Field Action'}">
+        
+        <div class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                
+                <!--Modal Body-->   
+                <div class="slds-modal__content slds-p-around--medium custom_body">
+                    <c:CreateAction title="Edit Record" actionId="{!v.actionId}" recordId="{!v.recordId}" editMode="true"/>
+                </div>
+                <!--End of Modal Body-->
+                
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+    
+    <!-- Open CreateEmailAction Component -->
+    <aura:if isTrue="{!v.editRecord &amp;&amp; v.actionType == 'Send Email Action'}">
+        
+        <div class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                
+                <!--Modal Body-->   
+                <div class="slds-modal__content slds-p-around--medium custom_body">
+                    <c:CreateEmailAction title="Edit Record" actionId="{!v.actionId}" recordId="{!v.recordId}" editMode="true"/>
+                </div>
+                <!--End of Modal Body-->
+                
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+    
+    <!-- Open CreateSurveyAction Component -->
+    <aura:if isTrue="{!v.editRecord &amp;&amp; v.actionType == 'Send Survey Action'}">
+        
+        <div class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                
+                <!--Modal Body-->   
+                <div class="slds-modal__content slds-p-around--medium custom_body">
+                    <c:CreateSurveyAction title="Edit Record" actionId="{!v.actionId}" recordId="{!v.recordId}" editMode="true"/>
+                </div>
+                <!--End of Modal Body-->
+                
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+    
+    <!-- Open DeleteAction Component -->
+    <aura:if isTrue="{!v.deleteRecord}">
+        
+        <div class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                
+                <!--Modal Body-->   
+                <div class="slds-modal__content slds-p-around--medium custom_body">
+                    <c:DeleteAction actionId="{!v.actionId}" />
+                </div>
+                <!--End of Modal Body-->
+                
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+</aura:component>

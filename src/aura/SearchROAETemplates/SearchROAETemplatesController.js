@@ -16,9 +16,13 @@
     
     handleRowAction : function(component, event, helper) {
         var action = event.getParam('action');
+        console.log("Action name = " + action.name);
         switch (action.name) {
-            case 'templateSelected':
-                helper.templateSelected(component, event);
+            case 'createNote':
+                helper.templateSelected(component, event, action.name);
+                break;
+            case 'createTask':
+                helper.templateSelected(component, event, action.name);
                 break;
         }
     },

@@ -1,0 +1,2 @@
+<aura:event type="APPLICATION" description="Event to refresh DisplayActions datatable">
+</aura:event>

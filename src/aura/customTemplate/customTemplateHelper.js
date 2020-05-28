@@ -45,7 +45,8 @@
             "taskType" : component.get("v.taskTypeValueSelected"),
             "notes" : component.get("v.notes"),
             "assignToId" : userValue,
-            "recordId" : component.get("v.recordId")
+            "recordId" : component.get("v.recordId"),
+            "templateSelected" : component.get("v.tempSelectedToFindAutoTask")
         };
         _this.callAction(component, actionName, param, function(response){
             if(!$A.util.isEmpty(response.userMessage)) {
@@ -88,14 +89,14 @@
         component.set("v.showRecordForm",true);
 		var _this = this;
         var actionName = "c.getPicklistValues";
-        var param = {};
+        var param = {
+            "templateName" : component.get("v.selectedTemplate")
+        };
         _this.callAction(component, actionName, param, function(response){
-            console.log(response.assignmentGrouptoptions);
             var assignmentGroupValues = response.assignmentGrouptoptions;
             var taskTypeValues = response.dependentPicklistValues[assignmentGroupValues[0]];
             var queueMap = response.queueMap;
-            console.log('taskTypeValues' + taskTypeValues);
-            console.log('queueMap' + queueMap);
+            var relatedAutoTask = response.autoTaskName;
             
             //Create option list
             var assignmentGroupOpts = _this.createOptionList(assignmentGroupValues);
@@ -107,6 +108,7 @@
             component.set("v.assignmentGroupOptions", assignmentGroupOpts);
             component.set("v.taskTypeOptions", taskTypeOpts);
             component.set("v.queueOptions", queueOpts);
+            component.set("v.relatedAutoTask", relatedAutoTask);
             
             //Get value from template and assign it to description on Task
             var templateBody = component.get("v.textValue");
@@ -115,6 +117,8 @@
             //Get value from template and assign it to subject on Task
             var taskSubject = component.get("v.selectedTemplate");
             component.set("v.subject", taskSubject);
+            //To find related auto task. Subject cannot be relied on because user can change subject
+            component.set("v.tempSelectedToFindAutoTask", taskSubject);
         });
 	},
     
@@ -220,12 +224,17 @@
         var _this = this;
         //Template selected on child component
         var tempSelected = event.getParam("templateSelected");
+        var buttonClicked = event.getParam("buttonClicked");
         var showChildComp = event.getParam("showChildComp");
         console.log("Event value received = " + tempSelected);
         
         component.set("v.callChildComp", showChildComp);
         component.set("v.selectedTemplate", tempSelected);
         _this.getTemplateBody(component, event);
+        
+        //Open modal to create Task
+        if(buttonClicked == 'createTask')
+            _this.getPicklistValues(component, event);
     },
     
     callAction: function(component, actionName, params, callback){  
@@ -284,7 +293,7 @@
         component.set("v.notes", "");
         component.set("v.assignTo", "");
         component.set("v.textValue", "");
-        component.set("v.selectedTemplate", "");
+        component.set("v.selectedTemplate", null);
         component.set("v.queueSelected", "")
         component.set("v.showUser", false);
         component.set("v.showQueue", false);

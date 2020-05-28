@@ -1,0 +1,59 @@
+<aura:component controller="RunAutoTaskController_AC" implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId" access="global">
+    <!-- Handler -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+    <!-- Aura Attributes -->
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="errors" type="string" default=""/>
+    <aura:attribute name="autoTaskSelected" type="String"/>
+    <aura:attribute name="autoTaskOptions" type="List" />
+    <aura:attribute name="taskSelected" type="String"/>
+    <aura:attribute name="taskOptions" type="List" />
+    <aura:attribute name="showSpinner" type="Boolean" default="false"/>
+    
+    <lightning:card footer="" title="Auto Tasks">
+        <p class="slds-p-horizontal_small">
+            <aura:if isTrue="{!v.autoTaskOptions.length > 1}">
+                <div class="slds-grid slds-p-vertical_xx-small">
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-form-element slds-form-element_stacked">
+                            <div class="slds-form-element__control">
+                                <lightning:select name="autoTask" label="Select an Auto Task" value="{!v.autoTaskSelected}" required="true">
+                                    <aura:iteration items="{!v.autoTaskOptions}" var="autoTaskOption">
+                                        <option text="{!autoTaskOption.label}" value="{!autoTaskOption.value}"> </option>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-form-element slds-form-element_stacked">
+                            <div class="slds-form-element__control">
+                                <lightning:select name="taskToUpdate" label="Task To Update" value="{!v.taskSelected}" required="true"
+                                                  disabled="{!empty(v.taskOptions)}" >
+                                    <aura:iteration items="{!v.taskOptions}" var="taskOption">
+                                        <option text="{!taskOption.label}" value="{!taskOption.value}"> </option>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="slds-p-top_small" align="center">
+                    <lightning:button variant="Brand" label="Run Auto Tasks" title="Auto Task Action" onclick="{!c.handleRunAutoTask}"/>
+                </div>
+                
+                <aura:set attribute="else">
+                    No Auto Tasks were found.
+                </aura:set>
+            </aura:if>
+        </p>
+        <aura:if isTrue="{!v.showSpinner}">
+            <div class="exampleHolder">
+                <lightning:spinner alternativeText="Loading" size="medium" />
+            </div>
+        </aura:if>
+    </lightning:card>  
+</aura:component>

@@ -29,3 +29,7 @@
     border-width: .5px;
     padding-left: 4.5%;
 }
+.THIS .align_right{ 
+    text-align: right;
+    color: red;
+}

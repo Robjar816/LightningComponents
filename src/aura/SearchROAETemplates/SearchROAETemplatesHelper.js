@@ -1,7 +1,8 @@
 ({
     getColumnAndAction : function(component, event) {
         var actions = [
-            {label: 'Select Template', name: 'templateSelected', iconName: 'action:check'}
+            {label: 'Create Note', name: 'createNote', iconName: 'action:new_note'},
+            {label: 'Create Task', name: 'createTask', iconName: 'action:new_task'}
         ];
         component.set('v.columns', [
             //{type: 'button', typeAttributes: {label: 'Select Template', name: 'templateSelected', iconName: 'action:check'}},
@@ -61,11 +62,15 @@
 	},
     
     //To send details of template selected to parent component.
-    templateSelected : function(component, event) {
+    templateSelected : function(component, event, buttonClicked) {
         var templateSelected = event.getParam('row');
         console.log("templateSelected = " + templateSelected.Name);
         var sendEvent = component.getEvent("templateSelectedEvent");
-        sendEvent.setParams({"templateSelected" : templateSelected.Name});
+        sendEvent.setParams({
+            "templateSelected" : templateSelected.Name,
+            "buttonClicked" : buttonClicked,
+            "showChildComp" : false
+        });
         sendEvent.fire();
         component.set("v.showModal", false);
     },

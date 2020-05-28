@@ -1,0 +1,8 @@
+.THIS .outerBox {
+	position:relative;
+	overflow:visible !important;
+}
+ 
+.THIS .spinner {
+	position:absolute;
+}

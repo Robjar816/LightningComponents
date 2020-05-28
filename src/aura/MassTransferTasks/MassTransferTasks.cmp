@@ -1,0 +1,93 @@
+<aura:component controller="MassTransferTasks_AC" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+    <!-- Handler -->
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    
+    <!-- Attributes -->
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="totalRecords" type="Integer"/>
+    <aura:attribute name="data" type="List"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="assignOwner" type="Boolean"/>
+    
+    <aura:html tag="style">
+        .cuf-content {
+        padding: 0 0rem !important;
+        }
+        .slds-p-around--medium {
+        padding: 0rem !important;
+        }       
+        .slds-modal__content{
+        overflow-y:hidden !important;
+        height:unset !important;
+        max-height:unset !important;
+        }
+        .slds-align_absolute-center{
+        background:none !important;
+        border:none !important;
+        }
+    </aura:html>
+    
+    <lightning:workspaceAPI aura:id="workspace"/>
+    
+    <div class = "card">
+        <lightning:card  title="Mass Transfer Tasks" iconName="action:new_task">
+            <aura:set attribute="actions">
+                <lightning:button variant="brand" label="Mass Transfer" title="Base action" onclick="{! c.handleMassTransfer }"/>
+            </aura:set>
+            
+            <div class="slds-p-left_medium slds-p-bottom_small">
+                <ul class="slds-list_horizontal slds-has-dividers_left">
+                    <li class="slds-item">{!v.totalRecords} items</li>
+                </ul>
+            </div>
+            <div class = "Datatable">
+                <lightning:datatable
+                                     aura:id = "customSettingTable"
+                                     columns = "{!v.columns}"
+                                     data = "{!v.data}"
+                                     keyField = "Id"
+                                     onrowaction="{!c.handleRowAction}"
+                                     showRowNumberColumn="true"
+                                     hideCheckboxColumn="false"/>
+            </div>
+
+            
+        </lightning:card>
+    </div>
+    
+    <aura:if isTrue="{!v.assignOwner}">
+        
+        <div class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h4 class="title slds-text-heading--medium">Mass Transfer Tasks</h4>
+                    
+                    <lightning:buttonIcon iconName="utility:close"
+                                          onclick="{! c.closeModel }"
+                                          alternativeText="close"
+                                          variant="bare-inverse"
+                                          class="slds-modal__close"/>
+                </header>
+                
+                <!--Modal Body-->   
+                <div class="slds-modal__content slds-p-around--medium">
+                    <div style="margin:25px;">
+                        <lightning:input name="input3" label="New Owner" placeholder="type here..."/>
+                    </div>
+                </div>
+                <!--End of Modal Body-->
+                
+                <!--Modal Footer-->
+                <div class="modal-footer slds-modal__footer slds-size_1-of-1">
+                    <lightning:button variant="Brand" class="slds-button" label="Update Owner" onclick="{!c.sendEmail}"/>
+                    <lightning:button variant="Neutral" class="slds-button" label="Cancel" onclick="{!c.handleClose}"/>
+                </div>
+    <!--End of Modal Footer-->
+                
+            </div>
+        </div>
+         <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+    
+  
+</aura:component>

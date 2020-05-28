@@ -1,0 +1,5 @@
+<design:component>
+	<design:attribute name="actionType"
+                    label="Actions To Display"
+                    datasource="Update Field Action,Send Email Action,Send Survey Action" />
+</design:component>
