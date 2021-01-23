@@ -1,0 +1,366 @@
+Date: Sat, 23 Jan 2021 00:14:15 +0000 (UTC)
+Message-ID: <488250129.1.1611360855964@dc60845efb1a>
+Subject: Exported From Confluence
+MIME-Version: 1.0
+Content-Type: multipart/related; 
+	boundary="----=_Part_0_791756744.1611360855938"
+
+------=_Part_0_791756744.1611360855938
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Content-Location: file:///C:/exported.html
+
+<html xmlns:o=3D'urn:schemas-microsoft-com:office:office'
+      xmlns:w=3D'urn:schemas-microsoft-com:office:word'
+      xmlns:v=3D'urn:schemas-microsoft-com:vml'
+      xmlns=3D'urn:w3-org-ns:HTML'>
+<head>
+    <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8=
+">
+    <title>Create/Update Campus Affiliation</title>
+    <!--[if gte mso 9]>
+    <xml>
+        <o:OfficeDocumentSettings>
+            <o:TargetScreenSize>1024x640</o:TargetScreenSize>
+            <o:PixelsPerInch>72</o:PixelsPerInch>
+            <o:AllowPNG/>
+        </o:OfficeDocumentSettings>
+        <w:WordDocument>
+            <w:View>Print</w:View>
+            <w:Zoom>90</w:Zoom>
+            <w:DoNotOptimizeForBrowser/>
+        </w:WordDocument>
+    </xml>
+    <![endif]-->
+    <style>
+                <!--
+        @page Section1 {
+            size: 8.5in 11.0in;
+            margin: 1.0in;
+            mso-header-margin: .5in;
+            mso-footer-margin: .5in;
+            mso-paper-source: 0;
+        }
+
+        table {
+            border: solid 1px;
+            border-collapse: collapse;
+        }
+
+        table td, table th {
+            border: solid 1px;
+            padding: 5px;
+        }
+
+        td {
+            page-break-inside: avoid;
+        }
+
+        tr {
+            page-break-after: avoid;
+        }
+
+        div.Section1 {
+            page: Section1;
+        }
+
+        /* Confluence print stylesheet. Common to all themes for print medi=
+a */
+/* Full of !important until we improve batching for print CSS */
+
+@media print {
+    #main {
+        padding-bottom: 1em !important; /* The default padding of 6em is to=
+o much for printouts */
+    }
+
+    body {
+        font-family: Arial, Helvetica, FreeSans, sans-serif;
+        font-size: 10pt;
+        line-height: 1.2;
+    }
+
+    body, #full-height-container, #main, #page, #content, .has-personal-sid=
+ebar #content {
+        background: #fff !important;
+        color: #000 !important;
+        border: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+    }
+
+    a, a:link, a:visited, a:focus, a:hover, a:active {
+        color: #000;
+    }
+
+    #content h1,
+    #content h2,
+    #content h3,
+    #content h4,
+    #content h5,
+    #content h6 {
+        font-family: Arial, Helvetica, FreeSans, sans-serif;
+        page-break-after: avoid;
+    }
+
+    pre {
+        font-family: Monaco, "Courier New", monospace;
+    }
+
+    #header,
+    .aui-header-inner,
+    #navigation,
+    #sidebar,
+    .sidebar,
+    #personal-info-sidebar,
+    .ia-fixed-sidebar,
+    .page-actions,
+    .navmenu,
+    .ajs-menu-bar,
+    .noprint,
+    .inline-control-link,
+    .inline-control-link a,
+    a.show-labels-editor,
+    .global-comment-actions,
+    .comment-actions,
+    .quick-comment-container,
+    #addcomment {
+        display: none !important;
+    }
+
+    /* CONF-28544 cannot print multiple pages in IE */
+    #splitter-content {
+        position: relative !important;
+    }
+
+    .comment .date::before {
+        content: none !important; /* remove middot for print view */
+    }
+
+    h1.pagetitle img {
+        height: auto;
+        width: auto;
+    }
+
+    .print-only {
+        display: block;
+    }
+
+    #footer {
+        position: relative !important; /* CONF-17506 Place the footer at en=
+d of the content */
+        margin: 0;
+        padding: 0;
+        background: none;
+        clear: both;
+    }
+
+    #poweredby {
+        border-top: none;
+        background: none;
+    }
+
+    #poweredby li.print-only {
+        display: list-item;
+        font-style: italic;
+    }
+
+    #poweredby li.noprint {
+        display: none;
+    }
+
+    /* no width controls in print */
+    .wiki-content .table-wrap,
+    .wiki-content p,
+    .panel .codeContent,
+    .panel .codeContent pre,
+    .image-wrap {
+        overflow: visible !important;
+    }
+
+    /* TODO - should this work? */
+    #children-section,
+    #comments-section .comment,
+    #comments-section .comment .comment-body,
+    #comments-section .comment .comment-content,
+    #comments-section .comment p {
+        page-break-inside: avoid;
+    }
+
+    #page-children a {
+        text-decoration: none;
+    }
+
+    /**
+     hide twixies
+
+     the specificity here is a hack because print styles
+     are getting loaded before the base styles. */
+    #comments-section.pageSection .section-header,
+    #comments-section.pageSection .section-title,
+    #children-section.pageSection .section-header,
+    #children-section.pageSection .section-title,
+    .children-show-hide {
+        padding-left: 0;
+        margin-left: 0;
+    }
+
+    .children-show-hide.icon {
+        display: none;
+    }
+
+    /* personal sidebar */
+    .has-personal-sidebar #content {
+        margin-right: 0px;
+    }
+
+    .has-personal-sidebar #content .pageSection {
+        margin-right: 0px;
+    }
+
+    .no-print, .no-print * {
+        display: none !important;
+    }
+}
+-->
+    </style>
+</head>
+<body>
+    <h1>Create/Update Campus Affiliation</h1>
+    <div class=3D"Section1">
+        The =E2=80=9CCreate/Update Campus Affiliation (
+<strong>Campus_Affiliation__c</strong>)=E2=80=9D section represents an inte=
+gration with Faculty Center that maintains the Campus Affiliation object wi=
+thin Salesforce. This object/table represents a faculty member's relationsh=
+ip with campuses and houses data points like status and primary college/dep=
+artment information that is managed at a Faculty+Campus granularity/level.
+<p>Use a PATCH requests with sObject Collections to add up to 200 records, =
+returning a list of SaveResult objects. You can choose whether to roll back=
+ the entire request when an error occurs.</p>
+<h3 id=3D"Create/UpdateCampusAffiliation-AuthorizationToken:">Authorization=
+ Token:</h3>
+<p><code>POST /services/oauth2/token</code></p>
+<p>Header: <code>content-Type : application/x-www-form-urlencoded</code></p=
+>
+<h4 id=3D"Create/UpdateCampusAffiliation-RequestBody:">Request Body:</h4>
+<div class=3D"code panel pdl" style=3D"border-width: 1px;">
+<div class=3D"codeContent panelContent pdl">=20
+<pre class=3D"syntaxhighlighter-pre" data-syntaxhighlighter-params=3D"brush=
+: java; gutter: false; theme: Confluence" data-theme=3D"Confluence">grant_t=
+ype : password
+client_id : [CLIENT_ID]
+client_secret : [CLIENT_SECRET]
+username : [SF_USERID]
+password : [SF_PASSWORD+SF_TOKEN]</pre>=20
+</div>
+</div>
+<h4 id=3D"Create/UpdateCampusAffiliation-ResponseBody:">Response Body:</h4>
+<div class=3D"code panel pdl" style=3D"border-width: 1px;">
+<div class=3D"codeContent panelContent pdl">=20
+<pre class=3D"syntaxhighlighter-pre" data-syntaxhighlighter-params=3D"brush=
+: java; gutter: false; theme: Confluence" data-theme=3D"Confluence">{
+    "access_token": "00D4C00000015BW!ARIAQGwXWJfsPPUw6ZRWHuhdtliKdPVuSikZpO=
+EhEs4hg_OKOAjgiS1ZoasDegGS4TxUlZZmtNnB2VYiS4udD_KzaJCS3Px_",
+    "instance_url": "https://apollogrp--facmgmtmvp.my.salesforce.com",
+    "id": "https://test.salesforce.com/id/00D4C00000015BWUAY/0054C000001zsC=
+SQAY",
+    "token_type": "Bearer",
+    "issued_at": "1600722372951",
+    "signature": "+VGnEBHOfxiWHu8CaEcfRjrelnJpn9y7tIJWmlV67zE=3D"
+}</pre>=20
+</div>
+</div>
+<h2 id=3D"Create/UpdateCampusAffiliation-MultipleRecordcreate/update(upsert=
+):">Multiple Record create/update (upsert):</h2>
+<h4 id=3D"Create/UpdateCampusAffiliation-RequestSyntax">Request Syntax</h4>
+<p><code>PATCH /services/apexrest/updateCampusAffiliation/</code></p>
+<p><strong>Header: </strong></p>
+<p><code>content-Type : application/json</code></p>
+<p><code>Authorization : Bearer [access_token]</code></p>
+<p></p>
+<h4 id=3D"Create/UpdateCampusAffiliation-Fieldswillnotbechangedoncerecordcr=
+eated:">Fields will not be changed once record created:</h4>
+<ul>
+<li><p>Campus_Affiliation__c.Faculty__c</p></li>
+<li><p>Campus_Affiliation__c.Campus__c</p></li>
+<li><p>Campus_Affiliation__c.External_ID__c ([PERSON_IRN:ORGA_NUMBER] - Key=
+ to identify record is new or existing.</p></li>
+</ul>
+<p></p>
+<h4 id=3D"Create/UpdateCampusAffiliation-ExpectationsoffieldssendbyFacultyC=
+enter:">Expectations of fields send by Faculty Center:</h4>
+<ul>
+<li><p><code>personIRN</code> =E2=86=92 Campus_Affiliation__c.Faculty__c</p=
+></li>
+<li><p><code>orgaNumber</code> =E2=86=92 Campus_Affiliation__c.Campus__c</p=
+></li>
+<li><p><code>primaryCollegeDeptId</code>=E2=86=92 Campus_Affiliation__c.Par=
+ent_College__c</p></li>
+<li><p><code>workflowStatus</code>=E2=86=92 Campus_Affiliation__c.Workflow_=
+Status__c</p></li>
+<li><p><code>activeAtCampus</code>=E2=86=92 Campus_Affiliation__c.Active_At=
+_Campus__c</p></li>
+</ul>
+<p></p>
+<h4 id=3D"Create/UpdateCampusAffiliation-ExpectationsoffieldsupdatedbyFacul=
+tyCenter:">Expectations of fields updated by Faculty Center:</h4>
+<ul>
+<li><p>Campus_Affiliation__c.Parent_College__c</p></li>
+<li><p>Campus_Affiliation__c.Workflow_Status__c</p></li>
+<li><p>Campus_Affiliation__c.Active_At_Campus__c</p></li>
+</ul>
+<p></p>
+<h4 id=3D"Create/UpdateCampusAffiliation-SampleRequestBodytoCreate:">Sample=
+ Request Body to Create:</h4>
+<div class=3D"code panel pdl" style=3D"border-width: 1px;">
+<div class=3D"codeContent panelContent pdl">=20
+<pre class=3D"syntaxhighlighter-pre" data-syntaxhighlighter-params=3D"brush=
+: java; gutter: false; theme: Confluence" data-theme=3D"Confluence">[{=20
+    "personIRN" : "1234",=20
+    "orgaNumber" : "51",
+    "primaryCollegeDeptId" : "12871154528",
+    "workflowStatus" : "Faculty",
+    "activeAtCampus" : true
+},
+{=20
+    "personIRN" : "100317280",=20
+    "orgaNumber" : "52",
+    "primaryCollegeDeptId" : "12871154528",
+    "workflowStatus" : "Faculty",
+    "activeAtCampus" : true
+}]</pre>=20
+</div>
+</div>
+<p></p>
+<div class=3D"code panel pdl" style=3D"border-width: 1px;">
+<div class=3D"codeContent panelContent pdl">=20
+<pre class=3D"syntaxhighlighter-pre" data-syntaxhighlighter-params=3D"brush=
+: java; gutter: false; theme: Confluence" data-theme=3D"Confluence">[
+    {
+        "success": false,
+        "statusCode": "400",
+        "recordId": null,
+        "message": "Required fields are missing: [Faculty__c]",
+        "fields": [
+            "Faculty__c"
+        ]
+    },
+    {
+        "success": true,
+        "statusCode": "200",
+        "recordId": "a3P4C0000000u9gUAA",
+        "message": "Record processed sucessfully",
+        "fields": null
+    }
+]</pre>=20
+</div>
+</div>
+<p></p>
+    </div>
+</body>
+</html>
+------=_Part_0_791756744.1611360855938--
