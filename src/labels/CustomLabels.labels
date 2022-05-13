@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
-    
     <labels>
         <fullName>casefields</fullName>
         <language>en_US</language>
@@ -8,5 +7,25 @@
         <shortDescription>casefields</shortDescription>
         <value>Status,Origin,ContactEmail,AccountId</value>
     </labels>
-   
+    <labels>
+        <fullName>PartsToIgnore</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>PartsToIgnore</shortDescription>
+        <value>Part I</value>
+    </labels>
+    <labels>
+        <fullName>XmlFolderId</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>XmlFolderId</shortDescription>
+        <value>0587h0000004xu1AAA</value>
+    </labels>
+    <labels>
+        <fullName>XmlParserEmailService</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>XmlParserEmailService</shortDescription>
+        <value>xmlparseremailservice@7-v5tvpu421ctoslnpeylhbjr6r5baq5ou0o26wi3adkhdo6rj.7h-h350eac.cs201.apex.sandbox.salesforce.com</value>
+    </labels>
 </CustomLabels>
